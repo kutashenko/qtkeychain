@@ -17,7 +17,6 @@ kwallet_interface.moc
 moc_keychain.*
 moc_keychain_p.*
 moc_gnomekeyring_p.*
-qkeychain_export.h
 qt_Qt5Keychain.pri
 
 #Qt files
