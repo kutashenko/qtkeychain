@@ -10,12 +10,9 @@ Product
     property bool buildStatic: false
     property bool libsecretSupport: false
 
-    Depends { name: "Quarks" }
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") }
-
-    condition: Quarks.enabledQuarks.contains("qtkeychain")
 
     cpp.defines: [ buildStatic ? "QKEYCHAIN_STATICLIB" : "QKEYCHAIN_SHAREDLIB" ]
 
