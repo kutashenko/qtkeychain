@@ -13,6 +13,9 @@ Product
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") }
+    Depends { name: "Quarks"; required: false }
+
+    condition: !Quarks.present || !Quarks.targetDeviceBuild
 
     cpp.defines: [ buildStatic ? "QKEYCHAIN_STATICLIB" : "QKEYCHAIN_SHAREDLIB" ]
 
