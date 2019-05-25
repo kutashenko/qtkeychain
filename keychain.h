@@ -15,6 +15,8 @@
 #define QKEYCHAIN_EXPORT
 #endif
 
+#include <QApplication>
+#include <QQmlEngine>
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
@@ -46,6 +48,8 @@ class JobPrivate;
  */
 class QKEYCHAIN_EXPORT Job : public QObject {
     Q_OBJECT
+    Q_PROPERTY(QString service READ service WRITE setService)
+    Q_PROPERTY(QString key READ key WRITE setKey)
 public:
     ~Job();
 
@@ -86,10 +90,10 @@ public:
      *
      * @see finished()
      */
-    void start();
+    Q_INVOKABLE void start();
 
-    QString service() const;
-
+    Q_INVOKABLE QString service() const;
+    Q_INVOKABLE void setService(const QString &serviceName);
     /**
      * @note Call this method only after finished() has been emitted.
      * @return The error code of the job (0 if no error).
@@ -129,14 +133,14 @@ public:
      * @return The string used as key by this job.
      * @see setKey()
      */
-    QString key() const;
+    Q_INVOKABLE QString key() const;
 
     /**
      * Set the @p key that this job will use to read or write data from/to the keychain.
      * The key can be an empty string.
      * @see key()
      */
-    void setKey( const QString& key );
+    Q_INVOKABLE void setKey( const QString& key );
 
     void emitFinished();
     void emitFinishedWithError(Error, const QString& errorString);
@@ -185,7 +189,7 @@ public:
      * @param service The service string used by this job (can be empty).
      * @param parent The parent of this job.
      */
-    explicit ReadPasswordJob( const QString& service, QObject* parent=0 );
+    explicit ReadPasswordJob( const QString& service="", QObject* parent=nullptr );
     ~ReadPasswordJob();
 
     /**
@@ -200,11 +204,22 @@ public:
      * @warning Returns meaningless data if the data was stored as binary data.
      * @see WritePasswordJob::setTextData()
      */
-    QString textData() const;
+    Q_INVOKABLE QString textData() const;
 
 private:
     friend class QKeychain::ReadPasswordJobPrivate;
 };
+
+/*!
+ *====================WRITE QML object===============
+ */
+static void seQMLReadJob(){
+    qmlRegisterType<QKeychain::ReadPasswordJob>("QtKeychain",
+                                                 1,0,
+                                                 "ReadPasswordJob");
+}
+Q_COREAPP_STARTUP_FUNCTION(seQMLReadJob);
+//====================================================
 
 class WritePasswordJobPrivate;
 
@@ -222,27 +237,38 @@ public:
      * @param service The service string used by this job (can be empty).
      * @param parent The parent of this job.
      */
-    explicit WritePasswordJob( const QString& service, QObject* parent=0 );
+    explicit WritePasswordJob( const QString& service="", QObject* parent=nullptr );
     ~WritePasswordJob();
 
     /**
      * Set the @p data that the job will store in the keychain as binary data.
      * @warning setBinaryData() and setTextData() are mutually exclusive.
      */
-    void setBinaryData( const QByteArray& data );
+    Q_INVOKABLE void setBinaryData( const QByteArray& data );
 
     /**
      * Set the @p data that the job will store in the keychain as string.
      * Typically @p data is a password.
      * @warning setBinaryData() and setTextData() are mutually exclusive.
      */
-    void setTextData( const QString& data );
+    Q_INVOKABLE void setTextData( const QString& data );
 
 private:
 
     friend class QKeychain::WritePasswordJobPrivate;
 };
 
+
+/*!
+ *====================WRITE QML object===============
+ */
+static void seQMLWriteJob(){
+    qmlRegisterType<QKeychain::WritePasswordJob>("QtKeychain",
+                                       1,0,
+                                      "WritePasswordJob");
+}
+Q_COREAPP_STARTUP_FUNCTION(seQMLWriteJob);
+//====================================================
 class DeletePasswordJobPrivate;
 
 /**
