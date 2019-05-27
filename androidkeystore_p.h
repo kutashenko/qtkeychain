@@ -211,7 +211,7 @@ public:
     class PrivateKeyEntry : public Entry
     {
     public:
-        using Object::Object;
+//        using Object::PrivateKeyEntry;
 
         inline PrivateKeyEntry(const Entry &init): Entry(init) {}
 

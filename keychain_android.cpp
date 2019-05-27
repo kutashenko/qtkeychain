@@ -67,8 +67,10 @@ void ReadPasswordJobPrivate::scheduledStart()
         return;
     }
 
-    const Cipher cipher = Cipher::getInstance(QStringLiteral("RSA/ECB/PKCS1Padding"),
-                                              QStringLiteral("AndroidOpenSSL"));
+    const Cipher cipher = Cipher::getInstance(QStringLiteral("RSA/ECB/PKCS1Padding"),"");
+//,
+//                                              QStringLiteral("AndroidKeyStoreBCWorkaround"));
+//                                              QStringLiteral("AndroidOpenSSL"));
 
     if (!cipher || !cipher.init(Cipher::DECRYPT_MODE, entry.getPrivateKey())) {
         q->emitFinishedWithError(Error::OtherError, tr("Could not create decryption cipher"));
@@ -134,8 +136,9 @@ void WritePasswordJobPrivate::scheduledStart()
     }
 
     const RSAPublicKey publicKey = entry.getCertificate().getPublicKey();
-    const Cipher cipher = Cipher::getInstance(QStringLiteral("RSA/ECB/PKCS1Padding"),
-                                              QStringLiteral("AndroidOpenSSL"));
+    const Cipher cipher = Cipher::getInstance(QStringLiteral("RSA/ECB/PKCS1Padding"),"");
+//,
+//                                              QStringLiteral("AndroidKeyStoreBCWorkaround")); //SHOULD USE ANDROIDOPENSSL ON < M
 
     if (!cipher || !cipher.init(Cipher::ENCRYPT_MODE, publicKey)) {
         q->emitFinishedWithError(Error::OtherError, tr("Could not create encryption cipher"));

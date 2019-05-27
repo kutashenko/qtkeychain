@@ -25,7 +25,7 @@ class QSettings;
 #define QTKEYCHAIN_VERSION 0x000100
 
 namespace QKeychain {
-
+    Q_NAMESPACE
 /**
  * Error codes
  */
@@ -40,6 +40,7 @@ enum Error {
     OtherError /**< Something else went wrong (errorString() might provide details) */
 };
 
+
 class JobExecutor;
 class JobPrivate;
 
@@ -50,7 +51,9 @@ class QKEYCHAIN_EXPORT Job : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString service READ service WRITE setService)
     Q_PROPERTY(QString key READ key WRITE setKey)
+    Q_PROPERTY(Error error READ error)
 public:
+    Q_ENUMS(Error)
     ~Job();
 
     /**
@@ -98,12 +101,12 @@ public:
      * @note Call this method only after finished() has been emitted.
      * @return The error code of the job (0 if no error).
      */
-    Error error() const;
+    Q_INVOKABLE Error error() const;
 
     /**
      * @return An error message that might provide details if error() returns OtherError.
      */
-    QString errorString() const;
+    Q_INVOKABLE QString errorString() const;
 
     /**
      * @return Whether this job autodeletes itself once finished() has been emitted. Default is true.
@@ -166,13 +169,20 @@ private:
 protected:
     JobPrivate* const d;
 
-friend class JobExecutor;
-friend class JobPrivate;
-friend class ReadPasswordJobPrivate;
-friend class WritePasswordJobPrivate;
-friend class DeletePasswordJobPrivate;
+    friend class JobExecutor;
+    friend class JobPrivate;
+    friend class ReadPasswordJobPrivate;
+    friend class WritePasswordJobPrivate;
+    friend class DeletePasswordJobPrivate;
 };
-
+/*!
+ *====================JOB QML object===============
+ */
+static void setJobQML(){
+    qRegisterMetaType<Error>("Error");
+}
+Q_COREAPP_STARTUP_FUNCTION(setJobQML);
+//====================================================
 class ReadPasswordJobPrivate;
 
 /**
@@ -215,8 +225,8 @@ private:
  */
 static void seQMLReadJob(){
     qmlRegisterType<QKeychain::ReadPasswordJob>("QtKeychain",
-                                                 1,0,
-                                                 "ReadPasswordJob");
+                                                1,0,
+                                                "ReadPasswordJob");
 }
 Q_COREAPP_STARTUP_FUNCTION(seQMLReadJob);
 //====================================================
@@ -264,8 +274,8 @@ private:
  */
 static void seQMLWriteJob(){
     qmlRegisterType<QKeychain::WritePasswordJob>("QtKeychain",
-                                       1,0,
-                                      "WritePasswordJob");
+                                                 1,0,
+                                                 "WritePasswordJob");
 }
 Q_COREAPP_STARTUP_FUNCTION(seQMLWriteJob);
 //====================================================
