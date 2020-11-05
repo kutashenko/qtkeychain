@@ -51,6 +51,7 @@ class QKEYCHAIN_EXPORT Job : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString service READ service WRITE setService)
     Q_PROPERTY(QString key READ key WRITE setKey)
+    Q_PROPERTY(bool autoDelete READ autoDelete WRITE setAutoDelete)
     Q_PROPERTY(Error error READ error)
 public:
     Q_ENUMS(Error)
@@ -112,13 +113,13 @@ public:
      * @return Whether this job autodeletes itself once finished() has been emitted. Default is true.
      * @see setAutoDelete()
      */
-    bool autoDelete() const;
+    Q_INVOKABLE bool autoDelete() const;
 
     /**
      * Set whether this job should autodelete itself once finished() has been emitted.
      * @see autoDelete()
      */
-    void setAutoDelete( bool autoDelete );
+    Q_INVOKABLE void setAutoDelete( bool autoDelete );
 
     /**
      * @return Whether this job will use plaintext storage on unsupported platforms. Default is false.
